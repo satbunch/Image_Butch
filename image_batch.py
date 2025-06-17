@@ -52,8 +52,8 @@ def main():
 
     # Excelを読み込んで辞書化
     df = pd.read_excel(args.mapping, dtype=str, usecols=[5, 6], engine="openpyxl")
-    codes = df.iloc[:, 5]
-    prods = df.iloc[:, 6]
+    codes = df.iloc[:, 0]
+    prods = df.iloc[:, 1]
     mapping = dict(zip(codes, prods))
 
     # リサンプルフィルタを固定指定
