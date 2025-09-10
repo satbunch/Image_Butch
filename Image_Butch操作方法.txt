@@ -1,0 +1,10 @@
+1. WindowsPowerShellを開く
+
+2.ディレクトリの移動。下のコマンドを入力
+cd C:\Users\piearth17\Desktop\Image_Butch\
+
+3.仮想環境構築。下のコマンドを入力
+. .\.venv\Scripts\Activate.venv\Scripts\Activate
+
+4.実行。下のコマンドを適宜読み替えて実行
+./image_batch.py -r C\Users\piearth17\Desktop\20250902画像処理 -m C\Users\piearth17\Desktop\ブランド価格変更20250829_副社長が作成.xlsx
