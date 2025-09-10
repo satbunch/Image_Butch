@@ -12,7 +12,7 @@ VERTICAL_SIZE = (1050, 1400)  # (幅、高さ)
 HORIZONTAL_SIZE = (1400, 1050)
 
 # Excelマッピング用のシート
-MAPPING_SHEET = "ポイントSTに在庫のある商品リスト"
+MAPPING_SHEET = "【重要】基準の販売価格"
 
 
 def parse_args():
@@ -51,9 +51,15 @@ def main():
         sys.exit(1)
 
     # Excelを読み込んで辞書化
-    df = pd.read_excel(args.mapping, dtype=str, usecols=[5, 6], engine="openpyxl")
-    codes = df.iloc[:, 0]
-    prods = df.iloc[:, 1]
+    df = pd.read_excel(
+        args.mapping,
+        sheet_name=MAPPING_SHEET,
+        dtype=str,
+        usecols=[0, 1],
+        engine="openpyxl",
+    )
+    codes = df.iloc[:, 1]
+    prods = df.iloc[:, 0]
     mapping = dict(zip(codes, prods))
 
     # リサンプルフィルタを固定指定
@@ -64,8 +70,8 @@ def main():
         if not code_dir.is_dir():
             continue
         code = code_dir.name
-        # ディレクトリ名が4桁の数字でなければスキップ
-        if not re.fullmatch(r"\d{4}", code):
+        # ディレクトリ名が5桁の数字でなければスキップ
+        if not re.fullmatch(r"\d{5}", code):
             continue
 
         product_no = mapping.get(code)
@@ -80,9 +86,14 @@ def main():
         # 入力ファイル一覧
         valid_exts = {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
         files = sorted(
-            p
-            for p in code_dir.iterdir()
-            if p.is_file() and p.suffix.lower() in valid_exts
+            (
+                p
+                for p in code_dir.iterdir()
+                if p.is_file() and p.suffix.lower() in valid_exts
+            ),
+            key=lambda p: [
+                int(c) if c.isdigit() else c for c in re.split(r"(\d+)", p.name)
+            ],
         )
 
         counter = 1
